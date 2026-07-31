@@ -27,14 +27,14 @@ export const CustomBreadcrumb = ({ currentPage, breadcrumbs = [] }: Props) => {
         <BreadcrumbSeparator />
 
         {breadcrumbs.map((crumb) => (
-          <>
-            <BreadcrumbItem key={crumb.label}>
+          <div key={crumb.label}>
+            <BreadcrumbItem>
               <BreadcrumbLink
                 render={<Link to={crumb.to}>{crumb.label}</Link>}
               />
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-          </>
+          </div>
         ))}
 
         <BreadcrumbItem>

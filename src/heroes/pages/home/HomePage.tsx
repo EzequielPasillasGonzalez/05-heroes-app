@@ -5,18 +5,19 @@ import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { useEffect, useState } from "react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomBreadcrumb } from "@/components/custom/CustomBreadcrumb";
-import { getHeroesByPage } from "@/heroes/actions/get-heroes-by-page.action";
+import { getHeroesByPageAction } from "@/heroes/actions/get-heroes-by-page.action";
+import { useQuery } from "@tanstack/react-query";
 
 type tabType = "all" | "favorites" | "heroes" | "villains";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState<tabType>("all");
 
-  useEffect(() => {
-    getHeroesByPage().then((heroes) => {
-      console.log(heroes);
-    });
-  }, []);
+  const { data } = useQuery({
+    queryKey: ["heroes"], // Donde se va a guardar
+    queryFn: () => getHeroesByPageAction(), // Funcion que se ejecuta
+    staleTime: 1000 * 60 * 5, // Por 5 minutos esta peticion se considera "fresca" y se guarda en cache
+  });
 
   return (
     <>
