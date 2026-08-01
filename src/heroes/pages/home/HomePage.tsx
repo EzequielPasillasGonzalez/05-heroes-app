@@ -10,6 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
 import { useMemo } from "react";
 
+import { useHeroSummary } from "@/heroes/hooks/useHeroSummary";
+
 const VALID_TABS = ["all", "favorites", "heroes", "villains"] as const;
 
 // Extraemos el tipo de TypeScript a partir del array (evita duplicar código)
@@ -43,6 +45,8 @@ const HomePage = () => {
     staleTime: 1000 * 60 * 5,
   });
 
+  const { data: summary } = useHeroSummary();
+
   return (
     <>
       {/* Header */}
@@ -68,7 +72,7 @@ const HomePage = () => {
               })
             }
           >
-            All Characters (16)
+            All Characters ({summary?.totalHeroes})
           </TabsTrigger>
           <TabsTrigger
             value="favorites"
@@ -91,7 +95,7 @@ const HomePage = () => {
               })
             }
           >
-            Heroes (12)
+            Heroes ({summary?.heroCount})
           </TabsTrigger>
           <TabsTrigger
             value="villains"
@@ -102,35 +106,30 @@ const HomePage = () => {
               })
             }
           >
-            Villains (2)
+            Villains ({summary?.villainCount})
           </TabsTrigger>
         </TabsList>
 
         {/* Mostrar todos los personajes*/}
         <TabsContent value="all">
-          <h1>all</h1>
           {/* Character Grid */}
-
           <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los favoritos*/}
         <TabsContent value="favorites">
-          <h1>favorites</h1>
           {/* Character Grid */}
           <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los heroes*/}
         <TabsContent value="heroes">
-          <h1>heroes</h1>
           {/* Character Grid */}
           <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los villanos*/}
         <TabsContent value="villains">
-          <h1>villains</h1>
           {/* Character Grid */}
           <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
