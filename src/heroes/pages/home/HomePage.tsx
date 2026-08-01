@@ -19,6 +19,8 @@ const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const rawTab: TabType = (searchParams.get("tab") as TabType) ?? "all";
+  const page = searchParams.get("page") ?? "1";
+  const limit = searchParams.get("limit") ?? "6";
 
   //  Validamos si el tab actual es uno de los permitidos
   const activeTab: TabType = useMemo(() => {
@@ -30,10 +32,15 @@ const HomePage = () => {
     return "all";
   }, [rawTab]);
 
-  const { data: heroesReponse } = useQuery({
-    queryKey: ["heroes"], // Donde se va a guardar
-    queryFn: () => getHeroesByPageAction(), // Funcion que se ejecuta
-    staleTime: 1000 * 60 * 5, // Por 5 minutos esta peticion se considera "fresca" y se guarda en cache
+  const { data: heroesResponse } = useQuery({
+    // Identificador único en caché y objeto de dependencias que reactivan la petición si cambian
+    queryKey: ["heroes", { page, limit }],
+
+    // Función asíncrona que obtiene los datos (debe retornar una promesa)
+    queryFn: () => getHeroesByPageAction(+page, +limit),
+
+    // Tiempo (5 min) durante el cual la data se considera "fresca"; mientras sea fresca, TanStack no re-hace la petición al volver al componente
+    staleTime: 1000 * 60 * 5,
   });
 
   return (
@@ -104,33 +111,33 @@ const HomePage = () => {
           <h1>all</h1>
           {/* Character Grid */}
 
-          <HeroGrid heroes={heroesReponse?.heroes ?? []} />
+          <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los favoritos*/}
         <TabsContent value="favorites">
           <h1>favorites</h1>
           {/* Character Grid */}
-          <HeroGrid heroes={heroesReponse?.heroes ?? []} />
+          <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los heroes*/}
         <TabsContent value="heroes">
           <h1>heroes</h1>
           {/* Character Grid */}
-          <HeroGrid heroes={heroesReponse?.heroes ?? []} />
+          <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los villanos*/}
         <TabsContent value="villains">
           <h1>villains</h1>
           {/* Character Grid */}
-          <HeroGrid heroes={heroesReponse?.heroes ?? []} />
+          <HeroGrid heroes={heroesResponse?.heroes ?? []} />
         </TabsContent>
       </Tabs>
 
       {/* Pagination */}
-      <CustomPagination totalPages={8} />
+      <CustomPagination totalPages={heroesResponse?.pages ?? 1} />
     </>
   );
 };
