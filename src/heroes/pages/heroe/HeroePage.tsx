@@ -10,15 +10,19 @@ import { getHeroAction } from "@/heroes/actions/get-heroe.action";
 export default function SuperheroApp() {
   const { idSlug = "" } = useParams();
 
-  const { data: superheroData, isLoading } = useQuery({
+  const {
+    data: superheroData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["hero-information", { idSlug }],
     queryFn: () => getHeroAction(idSlug),
-
+    retry: false, // Especifica que no debe de hacer reintentos
     staleTime: 1000 * 60 * 5,
   });
 
   if (isLoading) return <div>Cargando información...</div>;
-  if (!superheroData) return <div>Personaje no encontrado</div>;
+  if (!superheroData || isError) return <div>Personaje no encontrado</div>;
 
   const totalPower =
     superheroData.strength +
@@ -97,9 +101,7 @@ export default function SuperheroApp() {
               <h1 className="text-4xl md:text-6xl font-bold mb-2">
                 {superheroData.alias}
               </h1>
-              <p className="text-xl text-blue-200 mb-4">
-                {superheroData.name}
-              </p>
+              <p className="text-xl text-blue-200 mb-4">{superheroData.name}</p>
               <p className="text-lg text-gray-300 max-w-2xl">
                 {superheroData.description}
               </p>
@@ -350,9 +352,7 @@ export default function SuperheroApp() {
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">
                     <span className="text-gray-600">Alias:</span>
-                    <span className="font-semibold">
-                      {superheroData.alias}
-                    </span>
+                    <span className="font-semibold">{superheroData.alias}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b">
                     <span className="text-gray-600">Categoría:</span>
