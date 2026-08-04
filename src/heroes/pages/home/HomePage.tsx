@@ -9,9 +9,12 @@ import { CustomBreadcrumb } from "@/components/custom/CustomBreadcrumb";
 import { useHeroSummary } from "@/heroes/hooks/useHeroSummary";
 import { useHeroPaginated } from "@/heroes/hooks/useHeroPaginated";
 import { useQueryParameters } from "@/heroes/hooks/useQueryParameters";
+import { use } from "react";
+import { FavoriteHeroContext } from "@/heroes/context/FavoriteHeroContext";
 
 const HomePage = () => {
   const { activeTab, limit, page, setSearchParams } = useQueryParameters();
+  const { favorites, favoritesCount } = use(FavoriteHeroContext);
 
   const { data: heroesResponse } = useHeroPaginated({
     limit: +limit,
@@ -58,7 +61,7 @@ const HomePage = () => {
               })
             }
           >
-            Favorites (3)
+            Favorites ({favoritesCount})
           </TabsTrigger>
           <TabsTrigger
             value="hero"
@@ -99,7 +102,7 @@ const HomePage = () => {
         {/* Mostrar todos los favoritos*/}
         <TabsContent value="favorites">
           {/* Character Grid */}
-          <HeroGrid heroes={[]} />
+          <HeroGrid heroes={favorites ?? []} />
         </TabsContent>
 
         {/* Mostrar todos los heroes*/}
@@ -115,7 +118,9 @@ const HomePage = () => {
       </Tabs>
 
       {/* Pagination */}
-      <CustomPagination totalPages={heroesResponse?.pages ?? 1} />
+      {activeTab !== "favorites" && (
+        <CustomPagination totalPages={heroesResponse?.pages ?? 1} />
+      )}
     </>
   );
 };

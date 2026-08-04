@@ -9,20 +9,21 @@ import {
 interface FavoriteHeroContext {
   // State
   favorites: Hero[];
-  favoriteCount: number;
+  favoritesCount: number;
 
   // Methods
   isFavorite: (hero: Hero) => boolean;
   toggleFavorite: (hero: Hero) => void;
 }
 
-const FavoriteHeroContext = createContext<FavoriteHeroContext>(
+export const FavoriteHeroContext = createContext<FavoriteHeroContext>(
   {} as FavoriteHeroContext,
 );
 
 const getFavoritesFromLocalStorage = () => {
   const favorites = localStorage.getItem("favorites");
-  return favorites ? JSON.parse("favorites") : [];
+
+  return favorites ? JSON.parse(favorites) : [];
 };
 
 export const FavoriteHeroProvider = ({ children }: PropsWithChildren) => {
@@ -52,7 +53,7 @@ export const FavoriteHeroProvider = ({ children }: PropsWithChildren) => {
   return (
     <FavoriteHeroContext
       value={{
-        favoriteCount: favorites.length,
+        favoritesCount: favorites.length,
         favorites,
         isFavorite,
         toggleFavorite,
