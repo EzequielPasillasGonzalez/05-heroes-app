@@ -1,8 +1,20 @@
 import { Filter, Grid, Plus, Search, SortAsc } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { useRef } from "react";
+import { useQueryParameters } from "@/heroes/hooks/useQueryParameters";
 
 export const SearchControls = () => {
+  const { setParam, getParam } = useQueryParameters();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const search = getParam("name");
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      setParam({ name: inputRef.current?.value ?? null });
+    }
+  };
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-4 mb-8">
@@ -12,6 +24,9 @@ export const SearchControls = () => {
           <Input
             placeholder="Search heroes, villains, powers, teams..."
             className="pl-12 h-12 text-lg"
+            ref={inputRef}
+            onKeyDown={handleKeyDown}
+            defaultValue={search}
           />
         </div>
 

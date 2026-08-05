@@ -13,12 +13,16 @@ import { use } from "react";
 import { FavoriteHeroContext } from "@/heroes/context/FavoriteHeroContext";
 
 const HomePage = () => {
-  const { activeTab, limit, page, setSearchParams } = useQueryParameters();
+  const { getParam, setParam } = useQueryParameters();
   const { favorites, favoritesCount } = use(FavoriteHeroContext);
 
+  const limit = getParam("limit", 6);
+  const page = getParam("page", 1);
+  const activeTab = getParam("tab", "all");
+
   const { data: heroesResponse } = useHeroPaginated({
-    limit: +limit,
-    page: +page,
+    limit: limit,
+    page: page,
     category: activeTab,
   });
   const { data: summary } = useHeroSummary();
@@ -41,51 +45,30 @@ const HomePage = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger
             value="all"
-            onClick={() =>
-              setSearchParams((prev) => {
-                prev.set("tab", "all");
-                prev.set("category", "all");
-                return prev;
-              })
-            }
+            onClick={() => setParam({ tab: "all", category: "all", page: 1 })}
           >
             All Characters ({summary?.totalHeroes})
           </TabsTrigger>
           <TabsTrigger
             value="favorites"
             className="flex items-center gap-2"
-            onClick={() =>
-              setSearchParams((prev) => {
-                prev.set("tab", "favorites");
-                return prev;
-              })
-            }
+            onClick={() => setParam({ tab: "favorites", page: 1 })}
           >
             Favorites ({favoritesCount})
           </TabsTrigger>
           <TabsTrigger
             value="hero"
-            onClick={() =>
-              setSearchParams((prev) => {
-                prev.set("tab", "hero");
-                prev.set("category", "hero");
-                prev.set("page", "1");
-
-                return prev;
-              })
-            }
+            onClick={() => setParam({ tab: "hero", category: "hero", page: 1 })}
           >
             Heroes ({summary?.heroCount})
           </TabsTrigger>
           <TabsTrigger
             value="villain"
             onClick={() =>
-              setSearchParams((prev) => {
-                prev.set("tab", "villain");
-                prev.set("category", "villain");
-                prev.set("page", "1");
-
-                return prev;
+              setParam({
+                tab: "villain",
+                category: "villain",
+                page: "1",
               })
             }
           >

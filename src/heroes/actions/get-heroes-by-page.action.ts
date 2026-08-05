@@ -12,7 +12,6 @@ export const getHeroesByPageAction = async (
   if (isNaN(page)) page = 1;
   if (isNaN(limit)) limit = 6;
 
-  console.log(category);
   const isCategoryValid = (VALID_TABS as readonly string[]).includes(category);
   const validCategory: TabType = isCategoryValid ? category : "all";
 
