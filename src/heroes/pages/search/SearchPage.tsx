@@ -1,7 +1,7 @@
 import { CustomBreadcrumb } from "@/components/custom/CustomBreadcrumb";
-import { CustomJumbotron } from "../../../components/custom/CustomJumbotron.tsx";
-import { HeroStats } from "../../components/HeroStats.tsx";
-import { SearchControls } from "./ui/SearchControls.tsx";
+import { CustomJumbotron } from "@/components/custom/CustomJumbotron";
+import { HeroStats } from "@/heroes/components/HeroStats";
+import { SearchControls } from "@/heroes/pages/search/ui/SearchControls";
 
 const SearchPage = () => {
   return (
@@ -11,14 +11,7 @@ const SearchPage = () => {
         description="Descubre, explora y Administra SuperHéroes"
       />
 
-      <CustomBreadcrumb
-        currentPage="Search SuperHeroes"
-        breadcrumbs={[
-          { label: "Home1", to: "/" },
-          { label: "Home2", to: "/" },
-          { label: "Home3", to: "/" },
-        ]}
-      />
+      <CustomBreadcrumb currentPage="Search SuperHeroes" />
 
       {/* Stats Dashboard */}
       <HeroStats />

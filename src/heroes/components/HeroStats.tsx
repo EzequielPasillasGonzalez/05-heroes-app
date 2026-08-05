@@ -11,11 +11,11 @@ export const HeroStats = () => {
 
   const totalHeroes = summary?.totalHeroes ?? 0;
   const percentage =
-    totalHeroes > 0 ? ((favoritesCount / totalHeroes) * 100).toFixed(1) : "0.0";
+    totalHeroes > 0 ? ((favoritesCount / totalHeroes) * 100).toFixed(2) : "0.0";
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <HeroStatCard
+      <HeroStatCard 
         title="Total Characters"
         icon={<Users className="h-4 w-4 text-muted-foreground" />}
       >
