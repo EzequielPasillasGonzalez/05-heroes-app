@@ -1,6 +1,6 @@
 import {
   searchHeroesAction,
-  type Options,
+  type SearchOptions,
 } from "@/heroes/actions/search-heroes.action";
 import { useQuery } from "@tanstack/react-query";
 
@@ -11,7 +11,7 @@ export const useSearchHeroes = ({
   strength,
   team,
   universe,
-}: Options) => {
+}: SearchOptions) => {
   return useQuery({
     queryKey: [
       "search-heroes",

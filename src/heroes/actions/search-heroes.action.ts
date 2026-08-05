@@ -1,7 +1,7 @@
 import { heroesApi } from "@/heroes/api/hero.api";
 import type { SearchHeroesResponse } from "@/heroes/interfaces/search-heroes.interface";
 
-export interface Options {
+export interface SearchOptions {
   name?: string;
   team?: string;
   category?: string;
@@ -12,7 +12,7 @@ export interface Options {
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const searchHeroesAction = async (
-  options: Options,
+  options: SearchOptions,
 ): Promise<SearchHeroesResponse[]> => {
   // Filtrar parámetros undefined o vacíos para enviar una query limpia
   const cleanParams = Object.fromEntries(

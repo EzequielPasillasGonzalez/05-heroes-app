@@ -10,8 +10,9 @@ const SearchPage = () => {
   const { getParam } = useQueryParameters();
 
   const name = getParam("name");
+  const strength = getParam("strength");
 
-  const { data: searchedHeroes } = useSearchHeroes({ name });
+  const { data: searchedHeroes } = useSearchHeroes({ name, strength });
 
   return (
     <>

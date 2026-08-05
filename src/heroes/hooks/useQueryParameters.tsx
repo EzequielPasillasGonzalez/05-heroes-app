@@ -6,18 +6,23 @@ export const VALID_TABS = ["all", "favorites", "hero", "villain"] as const;
 // Extraemos el tipo de TypeScript a partir del array (evita duplicar código)
 export type TabType = (typeof VALID_TABS)[number];
 
-type ParamValue = string | number | undefined | null;
-type QueryParamsObj = Record<string, ParamValue>;
-
 export interface QueryParamsMap {
   tab: TabType;
   page: number;
   limit: number;
-  name: string;
+  activeAccordion: string;
   category: TabType;
+  name: string;
+  team: string;
+  universe: string;
+  status: string;
+  strength: string;
 }
 
 export type QueryParamKey = keyof QueryParamsMap;
+
+// Tipamos las opciones múltiples como un objeto parcial
+type QueryParamsObj = Partial<QueryParamsMap>;
 
 export const useQueryParameters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,22 +39,42 @@ export const useQueryParameters = () => {
     return "all";
   }, [rawTab]);
 
-  const setParam = (newParams: QueryParamsObj) => {
+  // Firma 1: Permite pasar un solo key-value
+  function setParam<K extends QueryParamKey>(
+    key: K,
+    value: QueryParamsMap[K] | null | undefined,
+  ): void;
+  // Firma 2: Permite pasar un objeto con múltiples parámetros
+  function setParam(paramsObj: QueryParamsObj): void;
+
+  function setParam<K extends QueryParamKey>(
+    keyOrObj: K | QueryParamsObj,
+    value?: QueryParamsMap[K] | null | undefined,
+  ) {
     setSearchParams((prev) => {
-      // Creamos un nuevo URLSearchParams basado en el anterior
       const params = new URLSearchParams(prev);
 
-      Object.entries(newParams).forEach(([key, value]) => {
+      // Si pasaron un objeto { page: 1, tab: "heroes" }
+      if (typeof keyOrObj === "object" && keyOrObj !== null) {
+        Object.entries(keyOrObj).forEach(([k, v]) => {
+          if (v === undefined || v === null || v === "") {
+            params.delete(k);
+          } else {
+            params.set(k, String(v));
+          }
+        });
+      } else if (typeof keyOrObj === "string") {
+        // Si pasaron clave y valor individuales ("page", 1)
         if (value === undefined || value === null || value === "") {
-          params.delete(key); // Si viene vacío, lo elimina de la URL
+          params.delete(keyOrObj);
         } else {
-          params.set(key, String(value)); // Inserta o actualiza el valor
+          params.set(keyOrObj, String(value));
         }
-      });
+      }
 
       return params;
     });
-  };
+  }
 
   //  Función genérica fuertemente tipada
   const getParam = <K extends QueryParamKey>(
@@ -87,12 +112,18 @@ export const useQueryParameters = () => {
     const defaults: QueryParamsMap = {
       tab: "all",
       category: "all",
+      activeAccordion: "",
       page: 1,
       limit: 6,
       name: "",
+      team: "",
+      universe: "",
+      status: "",
+      strength: "",
     };
     return defaults[key];
   };
+
   return {
     activeTab,
     setParam,
